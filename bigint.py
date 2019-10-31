@@ -6,18 +6,25 @@ Created on Wed Oct 30 14:17:33 2019
 """
 
 class MyBigIntegers:
+    # can't create multiple constructors in python, so change input based
+    # no input makes it be 0
+    # a list of input turns every number in a list into part
+    # a string input uses a string with x specified base
     def __init__(self, input=None, base=10):
         if input is None:
             self.integer = '0'
         elif isinstance(input, list):
-            self.integer = ''.join(str(x) for x in input)
+            self.integer = ''.join(str(x) for x in input).lstrip('0')
+            if self.integer is '': self.integer = '0'
         elif isinstance(input, str):
             self.integer = str(abs(int(input, base)))
     
+    # returns the length of the string
     def __len__(self):
         return len(self.integer)
     
-    def __add__(self, other) -> MyBigIntegers:
+    # adds two bigints and returns their sum as a bigint
+    def __add__(self, other):
         carry = 0
         array = list()
         length = max(len(other), len(self))
@@ -31,43 +38,38 @@ class MyBigIntegers:
         if carry: array.append(carry)
         return MyBigIntegers(input=array[::-1])
     
-    def __mul__(self, other) -> MyBigIntegers:
-        len1 = len(self) 
-        len2 = len(other) 
-        if other.integer == '0' or self.integer == '0': 
-            return MyBigIntegers()
-      
-        result = [0] * (len1 + len2) 
+    # multiplies two bigints and returns their product
+    def __mul__(self, other):
+        # turn digits into numbers
+        num1 = [int(x) for x in self.integer[::-1]]
+        num2 = [int(x) for x in other.integer[::-1]]
         
-        i_n1 = 0
-        i_n2 = 0
-      
-        for i in range(len1 - 1, -1, -1): 
-            carry = 0
-            n1 = ord(self.integer[i]) - 48
-      
-            i_n2 = 0
-      
-            for j in range(len2 - 1, -1, -1): 
-                n2 = ord(other.integer[j]) - 48
-                summ = n1 * n2 + result[i_n1 + i_n2] + carry 
-                carry = summ // 10
-                result[i_n1 + i_n2] = summ % 10
-                i_n2 += 1
-      
-            if (carry > 0): 
-                result[i_n1 + i_n2] += carry 
-      
-            i_n1 += 1
+        # add up
+        ans=[0] * (len(num1)+len(num2))
+        for i in range(len(num1)):
+            for j in range(len(num2)):
+                ans[i+j] += num1[i] * num2[j]
         
-        return MyBigIntegers(result[::-1])
+        # convert
+        carry = 0
+        for i in range(len(ans)):
+            ans[i] += carry
+            carry = ans[i] // 10
+            ans[i] %= 10
+        
+        # create
+        return MyBigIntegers(ans[::-1])
             
-    
+    # returns a string, specifying if you want base 16
     def ToString(self, base16=False):
         if base16:
+            # get hex number
             start = hex(int(self.integer))[2:]
+            # finished product
             finish = list()
+            # length for reference
             length = len(start) - 1
+            # append each, adding colons as necessary
             for i, x in enumerate(start[::-1]):
                 finish.append(x)
                 if i != length and i%4 == 3:
@@ -78,6 +80,10 @@ class MyBigIntegers:
         else:
             return self.integer
 
+"""
+Driver code
+verifies that we have working addition
+"""
 if __name__ == '__main__':
     
     A = ['523004898858735521', '220758617692186442', '460674828835159568',\
@@ -100,8 +106,23 @@ if __name__ == '__main__':
     
     
     
-    
-    
+def multiply(num1: str, num2: str) -> str:
+    nums1 = [int(i) for i in num1][::-1]
+    nums2 = [int(i) for i in num2][::-1]
+    res = [0]*(len(nums1)+len(nums2))
+        
+    for i, a in enumerate(nums1):
+        for j, b in enumerate(nums2):
+            res[i+j] += a * b
+    for i in range(len(res)-1):
+        res[i+1] = res[i+1] + res[i] // 10
+        res[i] = res[i] % 10
+    for i in range(len(res)-1,-1,-1):
+        if res[i]!=0:
+            return ''.join([str(k) for k in reversed(res[0:i+1])])
+    return '0'
+                
+ 
     
     
     
