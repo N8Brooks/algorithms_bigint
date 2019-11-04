@@ -5,10 +5,13 @@ Created on Wed Oct 30 17:13:39 2019
 @author: DSU
 """
 
+import sys
+sys.path.append("..")
+
 from tqdm import trange
 from stopwatch import stopwatch
 from random import randrange
-import bigint
+import bigint.bigint as bigint
 import pandas as pd
 import matplotlib.pyplot as plt
 

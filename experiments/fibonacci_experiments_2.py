@@ -1,23 +1,26 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Oct 31 14:55:57 2019
+Created on Thu Oct 31 15:32:33 2019
 
 @author: DSU
 """
 
 """
-Increases n by one each time
-Shows how this changes the function time
+Increases the digits of n each time
+Shows how this changes the function
 """
+
+import sys
+sys.path.append("..")
 
 from tqdm import trange
 from stopwatch import stopwatch
 from scipy.optimize import curve_fit
-import fibonacci
+import fibonacci.fibonacci_strings as fibonacci
 import pandas as pd
 import matplotlib.pyplot as plt
 
-MAX_INT = 1000
+MAX_INT = 5
 
 # timing and data
 clock = stopwatch()
@@ -25,13 +28,14 @@ df = pd.DataFrame()
 
 # run experiment
 for i in trange(MAX_INT):
+    n = 10**i
     # the row
     record = dict()
     
     # calculate for each algorithm
-    for algo in fibonacci.algorithms:
+    for algo in fibonacci.algorithms[:2]:
         clock.start()
-        algo(i)
+        algo(n)
         record[algo.__name__] = clock.time()
     
     # add to dataframe
@@ -47,11 +51,6 @@ def lin_fit(x, a, b):
 
 # exponential functions
 for algo in fibonacci.algorithms[:2]:
-    args = curve_fit(exp_fit, df.index, df[algo.__name__])
-    df[algo.__name__+'_predict'] = df.index.map(lambda x: exp_fit(x, *args[0]))
-
-# linear functions
-for algo in fibonacci.algorithms[2:]:
     args = curve_fit(exp_fit, df.index, df[algo.__name__])
     df[algo.__name__+'_predict'] = df.index.map(lambda x: exp_fit(x, *args[0]))
 

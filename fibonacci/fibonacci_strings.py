@@ -5,8 +5,11 @@ Created on Wed Oct 30 13:15:55 2019
 @author: DSU
 """
 
+import sys
+sys.path.append("..")
+
 from mpmath import *
-from bigint import MyBigIntegers
+from bigint.bigint import MyBigIntegers
 
 # dynamic implementation
 def FibLoop(x: int) -> str:
@@ -87,14 +90,8 @@ Runs up to 50th fib number
 """
 if __name__ == '__main__':
     for i in range(50):
-        a = FibLoop(i)
-        b = FibMatrix(i)
-        c = FibFormula(i)
-        d = FibFormulaBig(i)
-        
-        assert a == b
-        assert b == c
-        assert c == d
+        vals = [algo(i) for algo in algorithms]
+        assert all(vals[0] == x for x in vals)
     
     
     

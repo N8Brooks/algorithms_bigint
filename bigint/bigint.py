@@ -25,18 +25,22 @@ class MyBigIntegers:
     
     # adds two bigints and returns their sum as a bigint
     def __add__(self, other):
+        rst = ''
+        if len(self.integer) > len(other.integer):
+            num1, num2 = other.integer, self.integer
+        else:
+            num1, num2 = self.integer, other.integer
+        
+        diff = len(num2) - len(num1)
+        num1 = '0' * diff + num1
+        
         carry = 0
-        array = list()
-        length = max(len(other), len(self))
-        
-        for a, b in zip(self.integer[::-1].ljust(length, '0'),\
-                        other.integer[::-1].ljust(length, '0')):
-            s = int(a) + int(b) + carry
-            s, carry = s % 10, s // 10
-            array.append(s)
-        
-        if carry: array.append(carry)
-        return MyBigIntegers(input=array[::-1])
+        rst= list()
+        for i, j in zip(num1[::-1], num2[::-1]):
+            cur = ord(i) + ord(j) - 2 * ord('0') + carry
+            carry = cur // 10
+            rst.append(str(cur % 10))
+        return MyBigIntegers(['1'] + rst[::-1] if carry else rst[::-1])
     
     # multiplies two bigints and returns their product
     def __mul__(self, other):
