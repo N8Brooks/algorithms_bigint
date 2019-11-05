@@ -1,2 +1,3 @@
-./bigint/libbigint.so
-./bigint/libbigint.o
+bigint/bigint.o
+bigint/libbigint.so
+data.csv
