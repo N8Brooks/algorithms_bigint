@@ -521,6 +521,9 @@ struct Int {
   ######################################################################
 */
 
+#include <iostream>
+#include <map>
+
 extern "C" {
 	// return holder for fibonacci number
 	static string ret;
@@ -586,31 +589,35 @@ extern "C" {
 	  F[1][1] = w; 
 	}
 	
-	Int helper(Int f[], int n) {
-		if (n <= 1)
+	map<int, Int> f;
+	map<int, Int>::iterator pos;
+	
+	Int helper(int n) {
+		if (n < 2)
 			return 1;
 		
-		// If fib(n) is already computed 
-		if (f[n] != 0)
+		pos = f.find(n);
+		if (pos == f.end()) {
+			if (n & 1) {
+				int k = n / 2;
+				Int tmp = helper(k);
+				f[n] = (helper(k-1) * 2 + tmp) * tmp;
+			}
+			else {
+				int k = (n+1) / 2;
+				f[n] = pow(helper(k),2) + pow(helper(k-1),2);
+			}
 			return f[n];
-		
-		if (n & 1) {
-			int k = n/2;
-			f[n] = (helper(f, k-1)*2 + helper(f, k))*helper(f, k);
 		}
 		else {
-			int k = (n+1)/2;
-			f[n] = (helper(f, k)*helper(f, k) + helper(f, k-1)*helper(f, k-1));
+			return pos->second;
 		}
-	  
-		return f[n]; 
 	}
 	
-	// Cassini Implementation - can run into stack problems with large numbers - increase stack size to fix
+	// Cassini Implementation
 	const char * FibCassini(int n) {
-		Int f[n+1] = {0};
-		
-		ret = helper(f, n).to_string();
+		f.clear();
+		ret = helper(n).to_string();
 		
 		return ret.c_str();
 	}

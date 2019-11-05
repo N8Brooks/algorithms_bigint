@@ -76,7 +76,6 @@ def MatrixPower(F: list, x: int) -> None:
 
 # matrix multiplication method
 def FibMatrix(x: int) -> int:
-    assert x >= 0
     # F is the matrix that is computed
     F = [[1, 1],\
          [1, 0]]
@@ -85,20 +84,22 @@ def FibMatrix(x: int) -> int:
     
     return F[0][0]
 
-# Returns n'th fuibonacci number using table f[] 
-def FibCassini(x: int) -> int: 
-    assert x >= 0
-    # base cases 
-    if x <= 1: return 1
-
-    # applyting above formula [Note value n&1 is 1 
-    # if n is odd, else 0. 
+dp = dict()
+def helper(x: int) -> int:
+    if x < 2: return 1
     if x % 2:
         k = x // 2
-        return (2*FibCassini(k-1) + FibCassini(k))*FibCassini(k)
+        fibk = FibCassini(k)
+        return dp.setdefault(x, (2 * FibCassini(k-1) + fibk) * fibk)
     else:
         k = (x + 1) // 2
-        return FibCassini(k)*FibCassini(k) + FibCassini(k-1)*FibCassini(k-1)
+        return dp.setdefault(x, FibCassini(k)**2 + FibCassini(k-1)**2)
+
+# Returns n'th fuibonacci number using table f[]
+def FibCassini(x: int) -> int:
+    assert x >= 0
+    dp.clear()
+    return helper(x)
 
 # using golden ratio (only works to x==69 before precision becomes an issue)
 def FibFormula(x: int) -> int:
